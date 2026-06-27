@@ -1,28 +1,56 @@
 ﻿import streamlit as st
-import hashlib
-import time
 import json
-import os
-import math
+import time
+from zf_unified_features import ZFUnifiedQuantumDomain
 
-st.set_page_config(page_title="ZHQ INSTITUTIONAL CORE", page_icon="⚛️", layout="wide")
+# Konfigurasi Halaman (Zuhri Formalism: Clean & Minimalist)
+st.set_page_config(page_title="Zhonghaquantum | Performance Layer", page_icon="⚛️", layout="wide")
 
+# CSS: Estetika Solana-Style (Dark Mode, High Contrast)
 st.markdown("""
 <style>
-    .stApp { background: radial-gradient(circle at center, #0b1528 0%, #02050a 100%); color: #e2e8f0; }
-    .glass-card { background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 15px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-    .reaktor-img { width: 140px; height: 140px; border-radius: 50%; border: 4px solid #00E5FF; box-shadow: 0 0 30px #00E5FF; animation: spin 15s linear infinite; }
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap');
+    .stApp { background: #000000; color: #ffffff; font-family: 'Inter', sans-serif; }
+    .hero-container { text-align: center; padding: 60px 0; }
+    .hero-title { font-size: 3rem; font-weight: 600; background: linear-gradient(90deg, #00E5FF, #7B61FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .stats-card { background: #111111; padding: 30px; border-radius: 12px; border: 1px solid #222; text-align: center; transition: 0.3s; }
+    .stats-card:hover { border: 1px solid #00E5FF; }
+    .btn-custom { background: #00E5FF; color: #000; border-radius: 50px; padding: 10px 25px; font-weight: bold; }
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 style='text-align: center; color: #00E5FF;'>&#9883; ZHONGHAQUANTUM MAINNET</h1>", unsafe_allow_html=True)
+# Engine Initialization
+engine = ZFUnifiedQuantumDomain()
 
-tab1, tab2 = st.tabs(["⚡ Konsensus Ledger", "📜 Doktrin Kedaulatan"])
+# --- HEADER SECTION ---
+st.markdown("<div class='hero-container'><h1 class='hero-title'>The Quantum Backbone</h1><p>Performance at the speed of thought. Built on ZHQ Formalism.</p></div>", unsafe_allow_html=True)
+
+# --- STATS ROW (Solana-Style Metric Cards) ---
+col1, col2, col3, col4 = st.columns(4)
+stats = [("Quantum Signature", "Active"), ("Node Latency", "<1ms"), ("Security", "SHA3-256"), ("Status", "Live")]
+cols = [col1, col2, col3, col4]
+
+for i, col in enumerate(cols):
+    with col:
+        st.markdown(f"<div class='stats-card'><h3>{stats[i][0]}</h3><p>{stats[i][1]}</p></div>", unsafe_allow_html=True)
+
+# --- MAIN ENGINE DATA (Zuhri Formalism Integration) ---
+st.markdown("## 📜 Protocol Specifications")
+tab1, tab2 = st.tabs(["IDENTITY & ROUTER", "SECURITY & SHIELD"])
 
 with tab1:
-    st.write("Sistem beroperasi. Resonansi Kuantum: " + str(1.0 + math.sin(time.time())) )
+    st.subheader("Unified Identity Resolution")
+    st.json({
+        "Identity": "https://zhonghaquantum.io",
+        "Backbone": "https://zhonghaquantum.github.io",
+        "Signer": engine._generate_quantum_signature("identity")
+    })
 
 with tab2:
-    st.markdown("## 📜 Doktrin Protokol Kedaulatan")
-    st.latex(r'''V_{\text{Haqiqi}}(B, T) = \Psi_{\text{sensor}}(t) \times \left[ Z_c \cdot \sqrt{B} + \int (E_{\text{activity}} \cdot dt) \right]''')
+    st.subheader("Quantum Shield Protocol")
+    st.write("Ensuring zero-trace memory protection via Keccak Sponge Function.")
+    st.code("def execute_shield():\n    return 'MUTLAK_TERKUNCI'", language="python")
+
+# --- FOOTER ---
+st.divider()
+st.markdown("<p style='text-align: center; color: #666;'>© 2026 Zhonghaquantum Institution. Built for the next era of cryptographic sovereignty.</p>", unsafe_allow_html=True)
