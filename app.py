@@ -1,56 +1,87 @@
 ﻿import streamlit as st
-import json
-import time
-from zf_unified_features import ZFUnifiedQuantumDomain
 
-# Konfigurasi Halaman (Zuhri Formalism: Clean & Minimalist)
-st.set_page_config(page_title="Zhonghaquantum | Performance Layer", page_icon="⚛️", layout="wide")
+# ==========================================
+# 1. METADATA SHELL BROWSER (ETHEREUM-STYLE)
+# ==========================================
+st.set_page_config(
+    page_title="Zhonghaquantum Core v36.0",
+    page_icon="⚛️",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
 
-# CSS: Estetika Solana-Style (Dark Mode, High Contrast)
+# ==========================================
+# 2. INJEKSI LOGO & CSS GLOBAL (SOVEREIGN)
+# ==========================================
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap');
-    .stApp { background: #000000; color: #ffffff; font-family: 'Inter', sans-serif; }
-    .hero-container { text-align: center; padding: 60px 0; }
-    .hero-title { font-size: 3rem; font-weight: 600; background: linear-gradient(90deg, #00E5FF, #7B61FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .stats-card { background: #111111; padding: 30px; border-radius: 12px; border: 1px solid #222; text-align: center; transition: 0.3s; }
-    .stats-card:hover { border: 1px solid #00E5FF; }
-    .btn-custom { background: #00E5FF; color: #000; border-radius: 50px; padding: 10px 25px; font-weight: bold; }
+/* Sembunyikan elemen standar Streamlit */
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+
+/* Custom Background Navy Dark & Glow */
+.stApp {
+    background-color: #0b0f19;
+    color: #cbd5e1;
+}
+
+/* Injeksi Logo Kustom di Atas Sidebar */
+[data-testid="stSidebar"]::before {
+    content: "⚛️ ZHQ MASTER ENGINE";
+    font-size: 20px;
+    font-weight: bold;
+    color: #14b8a6;
+    display: block;
+    padding: 20px;
+    border-bottom: 1px solid #1f2937;
+    margin-bottom: 15px;
+}
 </style>
 """, unsafe_allow_html=True)
 
-# Engine Initialization
-engine = ZFUnifiedQuantumDomain()
+# ==========================================
+# 3. BLOK WHITEPAPER ATAS (GAYA ETHEREUM.ORG)
+# ==========================================
+st.markdown("""
+<div style="background-color: #111827; border: 1px solid #1f2937; padding: 30px; border-radius: 12px; margin-bottom: 30px; border-left: 6px solid #14b8a6;">
+    <span style="color: #14b8a6; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase;">Zuhri Formalism Technical Document</span>
+    <h1 style="color: #f8fafc; font-size: 38px; margin-top: 10px; margin-bottom: 5px;">⚛️ ZHQ ULTIMATE CONVERGENCE</h1>
+    <h3 style="color: #a78bfa; font-size: 18px; margin-top: 0; font-weight: normal;">Dokumen Teknis & Pembuktian Teorema Kriptografi v36.0</h3>
+    <p style="color: #94a3b8; font-size: 15px; line-height: 1.6; margin-top: 15px;">
+        Ekosistem <strong>Zhonghaquantum (ZHQ)</strong> menyatukan keandalan mutlak dari tiga pilar kripto dunia: 
+        <strong>Bitcoin</strong> (Kelangkaan Pasokan Terbatas), <strong>Ethereum</strong> (Fleksibilitas Smart Contract EVM), 
+        dan <strong>Solana</strong> (Kecepatan Transmisi Proof-of-History). Seluruh pilar ini dipayungi secara matematis di bawah 
+        algoritma enkripsi kebal kuantum <strong>Zuhri Formalism Lattice-Based Cryptography (LWE)</strong>.
+    </p>
+    <hr style="border: 0; border-top: 1px solid #1f2937; margin: 20px 0;">
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <div>
+            <h4 style="color: #14b8a6; margin: 0;">🔒 LWE Guard Security</h4>
+            <p style="color: #64748b; font-size: 13px; margin: 5px 0 0 0;">Perlindungan berlapis terhadap ancaman dekripsi komputer kuantum masa depan.</p>
+        </div>
+        <div>
+            <h4 style="color: #14b8a6; margin: 0;">🔥 Burning Gas Deflasi</h4>
+            <p style="color: #64748b; font-size: 13px; margin: 5px 0 0 0;">Pembakaran pecahan mikro-koin secara otomatis pada setiap eksekusi smart contract.</p>
+        </div>
+        <div>
+            <h4 style="color: #14b8a6; margin: 0;">⚙️ Ghost Isolation Node</h4>
+            <p style="color: #64748b; font-size: 13px; margin: 5px 0 0 0;">Kanal transmisi data tersembunyi untuk transaksi rahasia berdaulat.</p>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-# --- HEADER SECTION ---
-st.markdown("<div class='hero-container'><h1 class='hero-title'>The Quantum Backbone</h1><p>Performance at the speed of thought. Built on ZHQ Formalism.</p></div>", unsafe_allow_html=True)
+# ==========================================
+# 4. FITUR DAN DATA VISUAL dAPP (DI BAWAHNYA)
+# ==========================================
+col1, col2 = st.columns([1.2, 0.8])
 
-# --- STATS ROW (Solana-Style Metric Cards) ---
-col1, col2, col3, col4 = st.columns(4)
-stats = [("Quantum Signature", "Active"), ("Node Latency", "<1ms"), ("Security", "SHA3-256"), ("Status", "Live")]
-cols = [col1, col2, col3, col4]
+with col1:
+    st.subheader("📊 Konsensus Metrik Kuantum")
+    st.info("Koneksi Interfasial: AKTIF | Memancarkan Sinyal L1 ke Validator Global")
+    # Taruh kode visualisasi chart Anda di sini...
 
-for i, col in enumerate(cols):
-    with col:
-        st.markdown(f"<div class='stats-card'><h3>{stats[i][0]}</h3><p>{stats[i][1]}</p></div>", unsafe_allow_html=True)
-
-# --- MAIN ENGINE DATA (Zuhri Formalism Integration) ---
-st.markdown("## 📜 Protocol Specifications")
-tab1, tab2 = st.tabs(["IDENTITY & ROUTER", "SECURITY & SHIELD"])
-
-with tab1:
-    st.subheader("Unified Identity Resolution")
-    st.json({
-        "Identity": "https://zhonghaquantum.io",
-        "Backbone": "https://zhonghaquantum.github.io",
-        "Signer": engine._generate_quantum_signature("identity")
-    })
-
-with tab2:
-    st.subheader("Quantum Shield Protocol")
-    st.write("Ensuring zero-trace memory protection via Keccak Sponge Function.")
-    st.code("def execute_shield():\n    return 'MUTLAK_TERKUNCI'", language="python")
-
-# --- FOOTER ---
-st.divider()
-st.markdown("<p style='text-align: center; color: #666;'>© 2026 Zhonghaquantum Institution. Built for the next era of cryptographic sovereignty.</p>", unsafe_allow_html=True)
+with col2:
+    st.subheader("🔑 Dompet Siluman & Kunci Ghaib")
+    # Taruh tombol transaksi kuantum Anda di sini...
