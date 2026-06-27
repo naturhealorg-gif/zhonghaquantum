@@ -18,7 +18,7 @@ st.set_page_config(
 # =====================================================================
 # REAL-TIME 3D REPLICATION: GYROSCOPE & ENERGY MATRIX (From 1782533575219.jpg)
 # =====================================================================
-st.markdown(\"\"\"
+st.markdown("""
 <style>
 .quantum-universe-frame {
     display: flex;
@@ -117,7 +117,7 @@ st.markdown(\"\"\"
     <div class="gyro-ring-z ring-beta"></div>
 </div>
 <h2 class="system-header-title">?? ZHONGHAQUANTUM (ZHQ) ENGINE MAINNET</h2>
-\"\"\", unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # =====================================================================
 # LAYER 1: QUANTUM CRYPTOGRAPHIC VALIDATION (ANTI-QUANTUM HACK)
@@ -267,7 +267,7 @@ with t1:
     st.json(snapshot_chain)
 
 with t2:
-    st.markdown(f\"\"\"
+    st.markdown(f"""
     ## ?? ZHONGHAQUANTUM (ZHQ) RECONCILIATION WHITEPAPER
     **Paradigma Kedaulatan Finansial Baru Tanpa Keterikatan Modal Semesta.**
     
@@ -285,7 +285,7 @@ with t2:
     
     ### III. KEPATUHAN LISTING BURSA BESAR
     Protokol ini secara otonom menyiarkan parameter ketahanan volatilitas dalam bentuk muatan API terbuka. Saat pasar fiat luar mengalami kejatuhan massal, indikator mekanis pada sensor giroskop justru membesar, memicu algoritma HFT institusi untuk menyerap ZHQ sebagai pelindung portofolio utama mereka.
-    \"\"\")
+    """)
 
 with t3:
     st.subheader("Fasilitas Penyelamat Data Komunitas (Anti-Reset Cloud)")
@@ -321,3 +321,4 @@ with t4:
         "api_heartbeat_epoch": time.time()
     }
     st.code(json.dumps(listing_payload, indent=4), language="json")
+
