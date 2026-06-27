@@ -35,7 +35,7 @@ st.markdown("""
     <img src="https://raw.githubusercontent.com/naturhealorg-gif/zhonghaquantum/main/1782533575219.jpg" class="reaktor-img">
     <div class="gyro-ring-z"></div>
 </div>
-<h2 class="system-header-title">âš›ï¸ ZHONGHAQUANTUM (ZHQ) v36.0 ENGINE</h2>
+<h2 class="system-header-title">ZHONGHAQUANTUM (ZHQ) v36.0 ENGINE</h2>
 """, unsafe_allow_html=True)
 
 # =====================================================================
@@ -236,6 +236,7 @@ with t4:
         "api_heartbeat_epoch": time.time()
     }
     st.code(json.dumps(listing_payload, indent=4), language="json")
+
 
 
 
