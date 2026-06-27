@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 import hashlib
 import time
 import json
@@ -11,7 +11,7 @@ import random
 # =====================================================================
 st.set_page_config(
     page_title="ZHONGHAQUANTUM (ZHQ) INSTITUTIONAL CORE", 
-    page_icon="⚛️", 
+    page_icon="âš›ï¸", 
     layout="wide"
 )
 
@@ -35,7 +35,7 @@ st.markdown("""
     <img src="https://raw.githubusercontent.com/naturhealorg-gif/zhonghaquantum/main/1782533575219.jpg" class="reaktor-img">
     <div class="gyro-ring-z"></div>
 </div>
-<h2 class="system-header-title">⚛️ ZHONGHAQUANTUM (ZHQ) v36.0 ENGINE</h2>
+<h2 class="system-header-title">âš›ï¸ ZHONGHAQUANTUM (ZHQ) v36.0 ENGINE</h2>
 """, unsafe_allow_html=True)
 
 # =====================================================================
@@ -51,7 +51,7 @@ def verifikasi_proteksi_node():
     if not st.session_state["zhq_ultimate_unlocked"]:
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
-            st.warning("⚠️ SECURE PROTECTION ACTIVE: VALIDASI SINKRONISASI DIPERLUKAN.")
+            st.warning("âš ï¸ SECURE PROTECTION ACTIVE: VALIDASI SINKRONISASI DIPERLUKAN.")
             pin_input = st.text_input("Suntikkan Passphrase Utama JHQ Engine:", type="password")
             if st.button("BUKA MAINNET VALIDATOR"):
                 if enkripsi_quantum_shield(pin_input, "ZHONGHA_SOVEREIGN_SALT_2026") == "68c92a9bbfdc76ca6c49619623274cbbaea56b6070a2542a2ef620e7a188be2ef4db167a5b3a1a63cff721a78377b0fa":
@@ -160,7 +160,7 @@ with col_x: st.metric("Simbol Kriptografi", "ZHQ (ZHONGHAQUANTUM)")
 with col_y: st.metric("Kecepatan Giroskop Kuantum (Live)", f"{f_resonance:.4f} Rad/s")
 with col_z: st.metric("Valuasi Patokan Hakiki Semesta", f" USD")
 
-t1, t2, t3, t4 = st.tabs(["⚡ Konsensus Ledger", "📜 Doktrin Agung", "🔄 Pemulihan", "🛰️ Oracle"])
+t1, t2, t3, t4 = st.tabs(["âš¡ Konsensus Ledger", "ðŸ“œ Doktrin Agung", "ðŸ”„ Pemulihan", "ðŸ›°ï¸ Oracle"])
     "? Konsensus Ledger & Emisi", 
     "?? Dokumen Doktrin Agung (Zuhri Formalism Whitepaper)", 
     "?? Pemulihan Data Mandiri",
@@ -179,7 +179,7 @@ with t1:
 
 with t2:
     with t2:
-    st.markdown("## 📜 Doktrin Protokol Kedaulatan")
+    st.markdown("## ðŸ“œ Doktrin Protokol Kedaulatan")
     col_a, col_b = st.columns([2, 1])
     with col_a:
         st.write("Paradigma Kedaulatan Finansial Baru Tanpa Keterikatan Modal Semesta.")
@@ -236,5 +236,6 @@ with t4:
         "api_heartbeat_epoch": time.time()
     }
     st.code(json.dumps(listing_payload, indent=4), language="json")
+
 
 
