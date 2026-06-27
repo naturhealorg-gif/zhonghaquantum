@@ -3,21 +3,22 @@ import json
 import os
 import time
 from zf_unified_features import ZFUnifiedQuantumDomain
+from zf_institutional_magnet import generate_institutional_signal
 
 # Konfigurasi Halaman (Zuhri Formalism: Minimalist & High-Performance)
-st.set_page_config(page_title="ZHQ | Zhongha Quantum Core", page_icon="⚛️", layout="wide")
+st.set_page_config(page_title="ZHQ | Institutional Core", page_icon="⚛️", layout="wide")
 
-# CSS: Estetika Teknologi Masa Depan & Profesional
+# CSS: Estetika Quantum-Dark (Profesional & Modern)
 st.markdown("""
 <style>
     .stApp { background: #000000; color: #e0e0e0; font-family: 'Inter', sans-serif; }
     .nav-header { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #333; }
     .logo { font-size: 1.5rem; font-weight: bold; background: linear-gradient(90deg, #00E5FF, #7B61FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-right: 20px; }
     .hero { text-align: center; padding: 40px; }
-    .tech-card { background: #0a0a0a; padding: 25px; border-radius: 15px; border: 1px solid #1a1a1a; margin: 10px; transition: 0.3s; }
-    .tech-card:hover { border: 1px solid #00E5FF; }
+    .tech-card { background: #080808; padding: 25px; border-radius: 12px; border: 1px solid #222; margin: 10px; }
+    .status-active { color: #00ff9d; font-family: 'Courier New', monospace; font-weight: bold; }
     .header-title { font-size: 3rem; font-weight: 800; color: #ffffff; }
-    .status-active { color: #00ff9d; font-family: monospace; }
+    .sidebar-content { font-size: 0.9rem; color: #aaa; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -28,18 +29,26 @@ engine = ZFUnifiedQuantumDomain()
 st.markdown("""
 <div class='nav-header'>
     <div class='logo'>⚛️ ZHQ ZHONGHA QUANTUM</div>
-    <div style='color: #888;'>| INSTITUTIONAL ARCHITECTURE</div>
+    <div style='color: #888;'>| PROTOCOL LAYER-0</div>
 </div>
 """, unsafe_allow_html=True)
 
-# Status Integritas
+# Sidebar: Institutional Signaling (Magnet Bot)
+st.sidebar.markdown("### 📊 INSTITUTIONAL METRICS")
+st.sidebar.markdown(f"<div class='sidebar-content'><strong>Network Weight:</strong><br><code class='status-active'>{generate_institutional_signal()}</code></div>", unsafe_allow_html=True)
+st.sidebar.divider()
+st.sidebar.markdown("### 🛡️ INTEGRITY NODE")
+st.sidebar.write(f"**Gateway:** <span class='status-active'>{get_gateway_status()}</span>", unsafe_allow_html=True)
+st.sidebar.caption("Autonomous / Immutable / No-Owner")
+
+# --- Logic Helper ---
 def get_gateway_status():
     try:
         if os.path.exists("public_gate.bin"):
             with open("public_gate.bin", "rb") as f:
-                return f"ACTIVE-GATE-{f.read(8).hex().upper()}"
-        return "GATEWAY-STANDBY"
-    except: return "GATEWAY-ERROR"
+                return f"ACTIVE-{f.read(4).hex().upper()}"
+        return "STANDBY"
+    except: return "ERROR"
 
 # Layout Utama
 st.markdown("<div class='hero'><h1 class='header-title'>KEDAULATAN ASET MASA DEPAN</h1></div>", unsafe_allow_html=True)
@@ -49,40 +58,26 @@ col1, col2 = st.columns([1, 1])
 with col1:
     st.markdown("### 🧬 Teknologi Kuantum Inti")
     st.image("https://raw.githubusercontent.com/naturhealorg-gif/zhonghaquantum/main/1782533575219.jpg")
-    st.markdown("<div class='tech-card'><strong>Keccak Sponge Function:</strong> Enkripsi pasca-quantum sferis yang mustahil ditembus komputer konvensional maupun kuantum masa depan.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='tech-card'><strong>Keccak Sponge Engine:</strong> Struktur sferis untuk enkripsi pasca-quantum. Kebal terhadap komputasi brute-force masa depan.</div>", unsafe_allow_html=True)
 
 with col2:
-    st.markdown("### 🛡️ Dashboard Integritas")
-    st.write(f"**Integrity Node:** <span class='status-active'>{get_gateway_status()}</span>", unsafe_allow_html=True)
-    st.json({"Algorithm": "SHA3-512", "Security": "Zero-Trace Protocol", "Status": "OPERATIONAL"})
+    st.markdown("### 🛡️ Protocol Specifications")
+    st.json({"Layer": "Zero-Owner", "Security": "SHA3-512", "Traceability": "Null", "Status": "OPERATIONAL"})
+    st.markdown("<div class='tech-card'><strong>Autonomous Kernel:</strong> Sistem beroperasi tanpa intervensi pihak ketiga. Kode adalah hukum.</div>", unsafe_allow_html=True)
 
-# White Paper Section (Zuhri Formalism)
+# White Paper Section
 st.divider()
 st.markdown("## 📜 WHITE PAPER: PROTOKOL KEDAULATAN ASET UNIVERSAL")
 
-wp_tab1, wp_tab2, wp_tab3 = st.tabs(["Abstraksi & Arsitektur", "Hukum Keseimbangan", "Pesan Masa Depan"])
+wp_tab1, wp_tab2, wp_tab3 = st.tabs(["I. Arsitektur", "II. Integral Kedaulatan", "III. Pernyataan Masa Depan"])
 
 with wp_tab1:
-    st.markdown("""
-    ### I. ABSTRAKSI: KEDAULATAN MUTLAK
-    Protokol ini lahir sebagai entitas kedaulatan yang berdiri di atas hukum matematika. Kami menghadirkan standar penyimpanan nilai yang kebal terhadap erosi waktu.
-    
-    ### II. ARSITEKTUR TEKNOLOGI
-    * **Ghost Isolation Split:** Fragmentasi data tingkat layer-1 yang menghapus jejak forensik.
-    * **Zero-Trace Memory Protection:** Validasi transaksi dengan sistem Auto-RAM Clean.
-    """)
-
+    st.markdown("### Kedaulatan Mutlak\nProtokol ini dirancang sebagai entitas otonom yang tidak terikat pada otoritas manapun.")
 with wp_tab2:
-    st.markdown("### III. INTEGRAL KEDAULATAN")
-    st.latex(r'''V_{\text{ZHQ}} = \int (E \cdot dt) = \Phi_{\text{Absolute}}''')
-    st.write("Nilai aset tumbuh secara eksponensial seiring durasi kedaulatan yang dipegang.")
-
+    st.markdown("### Hukum Keseimbangan")
+    st.latex(r'''V_{\text{ZHQ}} = \int (E \cdot dt) \rightarrow \Psi_{\text{Absolute}}''')
 with wp_tab3:
-    st.markdown("""
-    ### IV. PESAN MASA DEPAN
-    Teknologi ini adalah artefak yang melampaui zamannya. Ini adalah pengganti segala aset digital yang pernah Anda kenal. Bukti akan berbicara dalam bahasa yang paling dimengerti oleh sejarah: Keabadian.
-    """)
+    st.markdown("### Bukti Akan Berbicara\nInilah aset digital yang mematuhi hukum fisika kuantum. Sejarah mencatat keteguhan di atas spekulasi.")
 
-# Footer
 st.divider()
-st.caption("ZHQ ZHONGHA QUANTUM | Immutable Core Architecture | 2026")
+st.caption("ZHQ ZHONGHA QUANTUM | Institutional Core Architecture | 2026")
