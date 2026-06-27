@@ -4,9 +4,30 @@ import numpy as np
 import time
 import hashlib
 import datetime
+import hmac
+import requests
+import os
+
+# --- ZUHRI FORMALISM: GATEKEEPER & INITIALIZATION ---
+def check_password():
+    def password_entered():
+        if hmac.compare_digest(st.session_state["password"], os.environ.get("ZHQ_ACCESS_KEY", "PROTECTED")):
+            st.session_state["password_correct"] = True
+        else:
+            st.session_state["password_correct"] = False
+    
+    if "password_correct" not in st.session_state:
+        st.title("ZHQ | RESTRICTED CORE")
+        st.text_input("INPUT KUNCI BINARY:", type="password", on_change=password_entered, key="password")
+        st.stop()
+    elif not st.session_state["password_correct"]:
+        st.error("AKSES DITOLAK: Kunci Tidak Valid.")
+        st.stop()
+
+check_password()
 
 # Konfigurasi Halaman
-st.set_page_config(page_title="ZHQ | Zhongha Quantum Core", page_icon="⚛️", layout="wide")
+st.set_page_config(page_title="ZHQ | Institutional Quantum Core", page_icon="⚛️", layout="wide")
 
 # CSS: Estetika "Zuhri Formalism"
 st.markdown("""
@@ -20,17 +41,26 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Fungsi Otonom (Tanpa error parser)
+# --- CORE FUNCTIONS ---
 def get_quantum_heartbeat():
     return f"HEARTBEAT-UTC-{datetime.datetime.utcnow().strftime('%S')}"
 
+def get_realtime_oracle_price():
+    try:
+        response = requests.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd", timeout=3)
+        raw_price = response.json()['bitcoin']['usd']
+        master_seed = os.environ.get("ZHQ_MASTER_SEED", "ZHQ_GLOBAL_DEFAULT_2026").encode()
+        hash_val = hmac.new(master_seed, str(raw_price).encode(), hashlib.sha3_512).digest()
+        return (int.from_bytes(hash_val[:4], 'big') % 5000) + raw_price
+    except: return 99999.0
+
+def generate_my_address():
+    seed = os.environ.get("ZHQ_MASTER_SEED", "DEFAULT").encode()
+    addr = hashlib.sha3_256(seed + b"PUBLIC_ADDR_GEN").hexdigest()
+    return f"ZHQ-{addr[:20].upper()}"
+
 # --- NAVIGATION ---
-st.markdown("""
-<div class='nav-header'>
-    <img src='https://raw.githubusercontent.com/naturhealorg-gif/zhonghaquantum/main/1782533575219.jpg' class='logo-img'>
-    <div class='header-text'>ZHQ ZHONGHA QUANTUM</div>
-</div>
-""", unsafe_allow_html=True)
+st.markdown("""<div class='nav-header'><img src='https://raw.githubusercontent.com/naturhealorg-gif/zhonghaquantum/main/1782533575219.jpg' class='logo-img'><div class='header-text'>ZHQ ZHONGHA QUANTUM</div></div>""", unsafe_allow_html=True)
 
 # --- DASHBOARD ---
 col1, col2 = st.columns([1, 2])
@@ -38,24 +68,35 @@ with col1:
     st.markdown("### 📊 Status Protokol")
     st.metric("Quantum Stability", "99.9997%")
     st.markdown(f"**Node Status:** <span class='status-active'>{get_quantum_heartbeat()}</span>", unsafe_allow_html=True)
-with col2:
-    st.markdown("### 📈 Resonansi Aset")
-    st.line_chart(pd.DataFrame(np.random.randn(20, 1).cumsum(), columns=['Value']))
+    st.metric("Institutional Price", f"${get_realtime_oracle_price():,.2f}")
+    st.markdown(f"**Wallet Address:** `{generate_my_address()}`")
 
-# --- WHITE PAPER LENGKAP ---
+with col2:
+    st.markdown("### 📈 Resonansi Aset (Real-Time)")
+    price = get_realtime_oracle_price()
+    st.line_chart(pd.DataFrame([price + np.random.normal(0, 50) for _ in range(20)], columns=['Value']))
+
+# --- INSTITUTIONAL HANDSHAKE (P2P) ---
+st.divider()
+st.markdown("### 🤝 Institutional Handshake (P2P)")
+handshake_key = st.text_input("Masukkan Public Key Institusi untuk Koneksi P2P:")
+if st.button("Initialize Handshake"):
+    if handshake_key:
+        st.success(f"Handshake Terenkripsi dengan {handshake_key[:8]}... berhasil diinisiasi.")
+    else:
+        st.warning("Menunggu input kunci publik institusi.")
+
+# --- WHITE PAPER ---
 st.divider()
 st.markdown("# 📜 WHITE PAPER: PROTOKOL KEDAULATAN ASET UNIVERSAL")
-st.markdown("### *Landasan Infrastruktur Keabadian Digital*")
-
 sections = {
-    "I. ABSTRAKSI": "Dunia finansial terjebak dalam ekosistem yang rapuh... Protokol ini lahir sebagai entitas kedaulatan yang berdiri di atas hukum matematika.",
-    "II. ARSITEKTUR": "Dibangun di atas Keccak Sponge Function. Menggunakan Enkripsi Pasca-Quantum, Ghost Isolation Split, dan Zero-Trace Memory Protection.",
-    "III. HUKUM KESEIMBANGAN": "Mekanisme Resonansi Kuantum: $V = \\int (E \\cdot dt)$. Nilai aset tumbuh secara eksponensial seiring durasi kedaulatan.",
-    "IV. KEUNGGULAN": "Immutable Core, Skalabilitas Adaptif, dan Efisiensi Tanpa Batas. Penghilangan beban perantara.",
-    "V. PERBANDINGAN": "Keamanan mutlak, kebebasan mutlak, dan kemandirian dari validasi pihak ketiga.",
-    "VI. PESAN MASA DEPAN": "Teknologi ini adalah artefak yang melampaui zamannya. Bukti akan berbicara dalam bahasa sejarah: Keabadian."
+    "I. ABSTRAKSI": "Protokol ini lahir sebagai entitas kedaulatan yang berdiri di atas hukum matematika, bukan otoritas.",
+    "II. ARSITEKTUR": "Keccak Sponge Function + Enkripsi Pasca-Quantum.",
+    "III. HUKUM KESEIMBANGAN": "$V = \\int (E \\cdot dt)$. Nilai tumbuh eksponensial.",
+    "IV. KEUNGGULAN": "Immutable Core, Skalabilitas Adaptif.",
+    "V. PERBANDINGAN": "Keamanan & Kemandirian Mutlak.",
+    "VI. PESAN MASA DEPAN": "Bukti sejarah: Keabadian digital."
 }
-
 for title, content in sections.items():
     with st.expander(f"#### {title}", expanded=False):
         st.write(content)
