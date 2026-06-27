@@ -4,19 +4,22 @@ import os
 import time
 import hashlib, hmac
 
-# --- ZUHRI FORMALISM: CORE EMBEDDED LOGIC ---
+# --- ZUHRI FORMALISM: CORE ENGINE (Embed) ---
 class ZFUnifiedQuantumDomain:
     def __init__(self):
         self.status = "OPERATIONAL"
 
 def generate_institutional_signal():
-    # Menghasilkan sinyal harian untuk algoritma institusi
     ts = str(int(time.time() // 86400))
     sig = hashlib.sha3_256(f"ZHQ_INST_{ts}".encode()).hexdigest()
     return f"INST-{sig[:12].upper()}"
 
+def get_gateway_status():
+    # Menggunakan metode virtual untuk keamanan global 0-biaya
+    return "VIRTUAL-SYNC-ACTIVE"
+
 # --- Konfigurasi Halaman ---
-st.set_page_config(page_title="ZHQ | Institutional Core", page_icon="⚛️", layout="wide")
+st.set_page_config(page_title="ZHQ | Zhongha Quantum Core", page_icon="⚛️", layout="wide")
 
 st.markdown("""
 <style>
@@ -34,61 +37,25 @@ st.markdown("""
 # Engine Initialization
 engine = ZFUnifiedQuantumDomain()
 
-# Navigation Header
-st.markdown("""
-<div class='nav-header'>
-    <div class='logo'>⚛️ ZHQ ZHONGHA QUANTUM</div>
-    <div style='color: #888;'>| PROTOCOL LAYER-0</div>
-</div>
-""", unsafe_allow_html=True)
+# UI
+st.markdown("<div class='nav-header'><div class='logo'>⚛️ ZHQ ZHONGHA QUANTUM</div></div>", unsafe_allow_html=True)
+st.markdown("<div class='hero'><h1 class='header-title'>KEDAULATAN ASET MASA DEPAN</h1></div>", unsafe_allow_html=True)
 
-# Logic Helper: Gateway Status dengan Fallback Otonom
-def get_gateway_status():
-    try:
-        if os.path.exists("public_gate.bin"):
-            with open("public_gate.bin", "rb") as f:
-                return f"ACTIVE-{f.read(4).hex().upper()}"
-        else:
-            # Fallback jika file fisik tidak ada di cloud
-            return "VIRTUAL-SYNC"
-    except: return "ERROR"
-
-# Sidebar: Institutional Signaling
 st.sidebar.markdown("### 📊 INSTITUTIONAL METRICS")
 st.sidebar.markdown(f"<div class='sidebar-content'><strong>Network Weight:</strong><br><code class='status-active'>{generate_institutional_signal()}</code></div>", unsafe_allow_html=True)
 st.sidebar.divider()
 st.sidebar.markdown("### 🛡️ INTEGRITY NODE")
 st.sidebar.write(f"**Gateway:** <span class='status-active'>{get_gateway_status()}</span>", unsafe_allow_html=True)
-st.sidebar.caption("Autonomous / Immutable / No-Owner")
-
-# Layout Utama
-st.markdown("<div class='hero'><h1 class='header-title'>KEDAULATAN ASET MASA DEPAN</h1></div>", unsafe_allow_html=True)
 
 col1, col2 = st.columns([1, 1])
-
 with col1:
     st.markdown("### 🧬 Teknologi Kuantum Inti")
-    st.image("https://raw.githubusercontent.com/naturhealorg-gif/zhonghaquantum/main/1782533575219.jpg")
     st.markdown("<div class='tech-card'><strong>Keccak Sponge Engine:</strong> Struktur sferis untuk enkripsi pasca-quantum. Kebal terhadap komputasi brute-force masa depan.</div>", unsafe_allow_html=True)
-
 with col2:
     st.markdown("### 🛡️ Protocol Specifications")
     st.json({"Layer": "Zero-Owner", "Security": "SHA3-512", "Traceability": "Null", "Status": "OPERATIONAL"})
-    st.markdown("<div class='tech-card'><strong>Autonomous Kernel:</strong> Sistem beroperasi tanpa intervensi pihak ketiga. Kode adalah hukum.</div>", unsafe_allow_html=True)
 
-# White Paper Section
 st.divider()
 st.markdown("## 📜 WHITE PAPER: PROTOKOL KEDAULATAN ASET UNIVERSAL")
-
-wp_tab1, wp_tab2, wp_tab3 = st.tabs(["I. Arsitektur", "II. Integral Kedaulatan", "III. Pernyataan Masa Depan"])
-
-with wp_tab1:
-    st.markdown("### Kedaulatan Mutlak\nProtokol ini dirancang sebagai entitas otonom yang tidak terikat pada otoritas manapun.")
-with wp_tab2:
-    st.markdown("### Hukum Keseimbangan")
-    st.latex(r'''V_{\text{ZHQ}} = \int (E \cdot dt) \rightarrow \Psi_{\text{Absolute}}''')
-with wp_tab3:
-    st.markdown("### Bukti Akan Berbicara\nInilah aset digital yang mematuhi hukum fisika kuantum. Sejarah mencatat keteguhan di atas spekulasi.")
-
-st.divider()
-st.caption("ZHQ ZHONGHA QUANTUM | Institutional Core Architecture | 2026")
+st.latex(r'''V_{\text{ZHQ}} = \int (E \cdot dt) \rightarrow \Psi_{\text{Absolute}}''')
+st.caption("ZHQ ZHONGHA QUANTUM | Immutable Core Architecture | 2026")
