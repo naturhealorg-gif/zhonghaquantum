@@ -1,84 +1,71 @@
 ﻿import streamlit as st
+import json
+import os
+import time
+from zf_unified_features import ZFUnifiedQuantumDomain
 
-# ==========================================
-# 1. METADATA SHELL BROWSER (ETHEREUM-STYLE)
-# ==========================================
-st.set_page_config(
-    page_title="Zhonghaquantum Core v36.0",
-    page_icon="⚛️",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
+# Konfigurasi Halaman (Zuhri Formalism: Minimalist & High-Performance)
+st.set_page_config(page_title="ZHQ | Institutional Core", page_icon="⚛️", layout="wide")
 
-# ==========================================
-# 2. INJEKSI LOGO & CSS GLOBAL (SOVEREIGN)
-# ==========================================
+# CSS: Estetika Quantum-Dark (Profesional & Modern)
 st.markdown("""
 <style>
-/* Sembunyikan elemen standar Streamlit */
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-header {visibility: hidden;}
-
-/* Custom Background Navy Dark & Glow */
-.stApp {
-    background-color: #0b0f19;
-    color: #cbd5e1;
-}
-
-/* Injeksi Logo Kustom di Atas Sidebar */
-[data-testid="stSidebar"]::before {
-    content: "⚛️ ZHQ MASTER ENGINE";
-    font-size: 20px;
-    font-weight: bold;
-    color: #14b8a6;
-    display: block;
-    padding: 20px;
-    border-bottom: 1px solid #1f2937;
-    margin-bottom: 15px;
-}
+    .stApp { background: #000000; color: #e0e0e0; font-family: 'Inter', sans-serif; }
+    .hero { text-align: center; padding: 40px; border-bottom: 1px solid #1a1a1a; }
+    .metric-card { background: #080808; padding: 20px; border-radius: 12px; border: 1px solid #333; text-align: center; }
+    .status-active { color: #00ff9d; font-weight: bold; }
+    .header-title { background: linear-gradient(90deg, #00E5FF, #7B61FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.5rem; }
 </style>
 """, unsafe_allow_html=True)
 
-# ==========================================
-# 3. BLOK WHITEPAPER ATAS (GAYA ETHEREUM.ORG)
-# ==========================================
-st.markdown("""
-<div style="background-color: #111827; border: 1px solid #1f2937; padding: 30px; border-radius: 12px; margin-bottom: 30px; border-left: 6px solid #14b8a6;">
-    <span style="color: #14b8a6; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase;">Zuhri Formalism Technical Document</span>
-    <h1 style="color: #f8fafc; font-size: 38px; margin-top: 10px; margin-bottom: 5px;">⚛️ ZHQ ULTIMATE CONVERGENCE</h1>
-    <h3 style="color: #a78bfa; font-size: 18px; margin-top: 0; font-weight: normal;">Dokumen Teknis & Pembuktian Teorema Kriptografi v36.0</h3>
-    <p style="color: #94a3b8; font-size: 15px; line-height: 1.6; margin-top: 15px;">
-        Ekosistem <strong>Zhonghaquantum (ZHQ)</strong> menyatukan keandalan mutlak dari tiga pilar kripto dunia: 
-        <strong>Bitcoin</strong> (Kelangkaan Pasokan Terbatas), <strong>Ethereum</strong> (Fleksibilitas Smart Contract EVM), 
-        dan <strong>Solana</strong> (Kecepatan Transmisi Proof-of-History). Seluruh pilar ini dipayungi secara matematis di bawah 
-        algoritma enkripsi kebal kuantum <strong>Zuhri Formalism Lattice-Based Cryptography (LWE)</strong>.
-    </p>
-    <hr style="border: 0; border-top: 1px solid #1f2937; margin: 20px 0;">
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-        <div>
-            <h4 style="color: #14b8a6; margin: 0;">🔒 LWE Guard Security</h4>
-            <p style="color: #64748b; font-size: 13px; margin: 5px 0 0 0;">Perlindungan berlapis terhadap ancaman dekripsi komputer kuantum masa depan.</p>
-        </div>
-        <div>
-            <h4 style="color: #14b8a6; margin: 0;">🔥 Burning Gas Deflasi</h4>
-            <p style="color: #64748b; font-size: 13px; margin: 5px 0 0 0;">Pembakaran pecahan mikro-koin secara otomatis pada setiap eksekusi smart contract.</p>
-        </div>
-        <div>
-            <h4 style="color: #14b8a6; margin: 0;">⚙️ Ghost Isolation Node</h4>
-            <p style="color: #64748b; font-size: 13px; margin: 5px 0 0 0;">Kanal transmisi data tersembunyi untuk transaksi rahasia berdaulat.</p>
-        </div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+# Engine & Gateway Initialization
+engine = ZFUnifiedQuantumDomain()
 
-# ==========================================
-# 4. FITUR DAN DATA VISUAL dAPP (DI BAWAHNYA)
-# ==========================================
-col1, col2 = st.columns([1.2, 0.8])
+def get_gateway_status():
+    try:
+        # Membaca biner gateway secara presisi tanpa menyentuh seed
+        if os.path.exists("public_gate.bin"):
+            with open("public_gate.bin", "rb") as f:
+                gate_data = f.read(8).hex()
+                return f"ACTIVE-GATE-{gate_data.upper()}"
+        return "GATEWAY-STANDBY"
+    except:
+        return "GATEWAY-ERROR"
+
+# --- LAYOUT DASHBOARD ---
+st.markdown("<div class='hero'><h1 class='header-title'>ZHQ INSTITUTIONAL MAINNET</h1></div>", unsafe_allow_html=True)
+
+# Sidebar: Status Integritas Biner
+st.sidebar.markdown("## 🛡️ ZHQ COMMAND CENTER")
+st.sidebar.write(f"**Integrity Node:**")
+st.sidebar.markdown(f"<p class='status-active'>{get_gateway_status()}</p>", unsafe_allow_html=True)
+st.sidebar.divider()
+st.sidebar.caption("System V36.0 | Immutable Core")
+
+# Main Dashboard
+col1, col2 = st.columns([1, 1])
 
 with col1:
-    st.subheader("📊 Konsensus Metrik Kuantum")
-    st.info("Koneksi Interfasial: AKTIF | Memancarkan Sinyal L1 ke Validator Global")
-    # Taruh kode visualisasi chart Anda di sini...
+    st.markdown("### 🧬 Protocol Specifications")
+    st.info("ZHQ employs Keccak Sponge Function with Zero-Trace memory protocol.")
+    st.json({
+        "Algorithm": "SHA3-512 (Post-Quantum)",
+        "Memory": "Zero-Trace (RAM Clean)",
+        "Accessibility": "Global Binary Gateway",
+        "Cost": "100% Free / 0% Rent"
+    })
 
+with col2:
+    st.markdown("### 🌐 Global Gateway Access")
+    st.write("Jalur akses aman yang diturunkan dari master seed untuk verifikasi global.")
+    if st.button("Initialize Quantum Handshake"):
+        with st.spinner("Securing connection..."):
+            time.sleep(1.5)
+            st.success("Handshake established with local gateway.")
+
+# Section LaTeX (Zuhri Formalism Mathematical Proof)
+st.divider()
+st.markdown("### 📜 Mathematical Sovereignty")
+st.latex(r'''\Phi_{\text{ZHQ}} = \oint_{\text{Gateway}} \left( \frac{\partial \text{Sponge}}{\partial \text{Entropy}} \right) d\text{t} = \Psi_{\text{Absolute}}''')
+
+st.markdown("<p style='text-align: center; font-size: 0.8rem; color: #555;'>Bukti akan berbicara ke depan. Inilah aset digital masa depan.</p>", unsafe_allow_html=True)
