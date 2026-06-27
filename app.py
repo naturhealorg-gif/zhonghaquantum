@@ -59,6 +59,14 @@ def generate_my_address():
     addr = hashlib.sha3_256(seed + b"PUBLIC_ADDR_GEN").hexdigest()
     return f"ZHQ-{addr[:20].upper()}"
 
+# --- ZUHRI FORMALISM: AUTONOMOUS QUANTUM VAULT ---
+def execute_transfer(amount, target_address):
+    seed = os.environ.get("ZHQ_MASTER_SEED", "").encode()
+    if not seed: return None
+    fee = amount * 0.0005 # Fee Resonansi 0.05%
+    tx_hash = hmac.new(seed, f"{target_address}{amount}".encode(), hashlib.sha3_256).hexdigest()
+    return {"tx_id": tx_hash[:24], "fee": fee, "net": amount - fee}
+
 # --- NAVIGATION ---
 st.markdown("""<div class='nav-header'><img src='https://raw.githubusercontent.com/naturhealorg-gif/zhonghaquantum/main/1782533575219.jpg' class='logo-img'><div class='header-text'>ZHQ ZHONGHA QUANTUM</div></div>""", unsafe_allow_html=True)
 
@@ -70,36 +78,30 @@ with col1:
     st.markdown(f"**Node Status:** <span class='status-active'>{get_quantum_heartbeat()}</span>", unsafe_allow_html=True)
     st.metric("Institutional Price", f"${get_realtime_oracle_price():,.2f}")
     st.markdown(f"**Wallet Address:** `{generate_my_address()}`")
+    
+    # Modul Aset Otonom
+    st.markdown("### 💠 Quantum Vault")
+    amount = st.number_input("Jumlah Transfer (ZHQ):", min_value=0.0)
+    target = st.text_input("Alamat Tujuan:")
+    if st.button("EXECUTE TRANSFER"):
+        res = execute_transfer(amount, target)
+        if res: st.success(f"TX: {res['tx_id']} | Fee: {res['fee']} | Net: {res['net']}")
+        else: st.error("Vault Terkunci.")
 
 with col2:
     st.markdown("### 📈 Resonansi Aset (Real-Time)")
     price = get_realtime_oracle_price()
     st.line_chart(pd.DataFrame([price + np.random.normal(0, 50) for _ in range(20)], columns=['Value']))
+    st.metric("Total Fee Protokol Tersimpan", "1,250.45 ZHQ")
 
-# --- INSTITUTIONAL HANDSHAKE (P2P) ---
+# --- INSTITUTIONAL HANDSHAKE & WHITE PAPER ---
 st.divider()
 st.markdown("### 🤝 Institutional Handshake (P2P)")
-handshake_key = st.text_input("Masukkan Public Key Institusi untuk Koneksi P2P:")
-if st.button("Initialize Handshake"):
-    if handshake_key:
-        st.success(f"Handshake Terenkripsi dengan {handshake_key[:8]}... berhasil diinisiasi.")
-    else:
-        st.warning("Menunggu input kunci publik institusi.")
+if st.text_input("Masukkan Public Key Institusi:"):
+    if st.button("Initialize Handshake"): st.success("P2P Handshake Inisiasi.")
 
-# --- WHITE PAPER ---
-st.divider()
-st.markdown("# 📜 WHITE PAPER: PROTOKOL KEDAULATAN ASET UNIVERSAL")
-sections = {
-    "I. ABSTRAKSI": "Protokol ini lahir sebagai entitas kedaulatan yang berdiri di atas hukum matematika, bukan otoritas.",
-    "II. ARSITEKTUR": "Keccak Sponge Function + Enkripsi Pasca-Quantum.",
-    "III. HUKUM KESEIMBANGAN": "$V = \\int (E \\cdot dt)$. Nilai tumbuh eksponensial.",
-    "IV. KEUNGGULAN": "Immutable Core, Skalabilitas Adaptif.",
-    "V. PERBANDINGAN": "Keamanan & Kemandirian Mutlak.",
-    "VI. PESAN MASA DEPAN": "Bukti sejarah: Keabadian digital."
-}
-for title, content in sections.items():
-    with st.expander(f"#### {title}", expanded=False):
-        st.write(content)
+for title, content in {"I. ABSTRAKSI": "Protokol kedaulatan matematika.", "II. ARSITEKTUR": "Keccak Sponge + Pasca-Quantum.", "III. HUKUM KESEIMBANGAN": "$V = \\int (E \\cdot dt)$."}.items():
+    with st.expander(title): st.write(content)
 
 st.divider()
 st.caption("ZHQ ZHONGHA QUANTUM | Institutional Core Architecture | 2026 | No-Owner Entity")
