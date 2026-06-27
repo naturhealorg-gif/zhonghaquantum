@@ -82,6 +82,3 @@ with col1:
     st.info("Koneksi Interfasial: AKTIF | Memancarkan Sinyal L1 ke Validator Global")
     # Taruh kode visualisasi chart Anda di sini...
 
-with col2:
-    st.subheader("🔑 Dompet Siluman & Kunci Ghaib")
-    # Taruh tombol transaksi kuantum Anda di sini...
