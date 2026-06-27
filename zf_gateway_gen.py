@@ -1,0 +1,1 @@
+import hashlib, hmac, os; seed = open("master_seed.bin","rb").read(); gate = hmac.new(seed, b"GLOBAL_ACCESS_GATE_2026", hashlib.sha3_512).digest(); open("public_gate.bin","wb").write(gate); print("[ZF-CORE] Gateway Biner Terproteksi Terpasang.")
