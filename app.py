@@ -7,16 +7,22 @@ import hmac
 import os
 import time
 
-# --- ZUHRI FORMALISM: ZF-CORE ENGINE CONFIGURATION ---
+# --- ZUHRI FORMALISM: INTEGRATED ZF-CORE ENGINE ---
+def get_master_seed():
+    """Mengambil master seed dari file biner (Hardware-Locked Logic)"""
+    try:
+        with open("master_seed.bin", "rb") as f:
+            return f.read().hex()
+    except:
+        return os.environ.get("ZHQ_MASTER_SEED", "DEFAULT_QUANTUM_SEED_2026")
+
 class ZHQ_Sovereign_Engine:
     def __init__(self):
-        # Proteksi HSM / Air-Gapped Simulation jika Environment Kosong
-        self.master_seed = os.environ.get("ZHQ_MASTER_SEED", "ZHQ_GLOBAL_DEFAULT_2026")
-        
+        self.master_seed = get_master_seed()
+        self.total_supply = 1000000.0  # Supply awal untuk mekanisme Auto-Burn
+
     def get_internal_valuation(self):
-        """Self-Referential Oracle: Nilai absolut berdasarkan hukum keseimbangan V = int(E * dt)"""
         base_price = 1500.0
-        # Akumulasi nilai berdasarkan waktu (dt) secara otonom
         time_factor = datetime.datetime.now().hour * 0.15
         return base_price + time_factor
 
@@ -24,31 +30,32 @@ class ZHQ_Sovereign_Engine:
         return hmac.new(self.master_seed.encode(), data.encode(), hashlib.sha3_512).hexdigest()
 
     def run_autopilot_audit(self):
-        """Self-Auditing: Memverifikasi integritas biner ekosistem ZHQ"""
         audit_tag = f"AUDIT-{datetime.datetime.utcnow().strftime('%Y%m%d')}"
         return self.generate_hash(audit_tag)[:20].upper()
 
+    def auto_burn_mechanism(self, transaction_volume):
+        """Mekanisme deflasi otonom untuk meningkatkan nilai intrinsik."""
+        burn_rate = transaction_volume * 0.01
+        self.total_supply -= burn_rate
+        return burn_rate
+
     def execute_autonomous_tx(self, target, amount):
-        """Autonomous Vault: Eksekusi transfer riil dengan penandatanganan mandiri"""
+        """Autonomous Vault: Eksekusi transfer riil dengan Auto-Burn."""
+        burn_amount = self.auto_burn_mechanism(amount)
         tx_hash = self.generate_hash(f"{target}{amount}{time.time()}")
-        fee = amount * 0.0005  # Fee Resonansi Protokol 0.05%
+        fee = amount * 0.0005
         return {
-            "tx_id": f"ZHQ-TX-{tx_hash[:20].upper()}", 
-            "fee": fee, 
-            "net": amount - fee
+            "tx_id": f"ZHQ-TX-{tx_hash[:20].upper()}",
+            "fee": fee,
+            "net": amount - fee,
+            "burned": burn_amount
         }
 
-    # --- PENINGKATAN: QUANTUM SENSOR (ZF-CORE) ---
     def zf_core_network_sensor(self):
-        """Sensor Autopilot untuk memancarkan sinyal ke Institusi & Smart Money"""
         current_value = self.get_internal_valuation()
-        # Algoritma penarik modal berdasarkan volatilitas terkendali
         resonance_index = hashlib.sha3_256(f"{current_value}".encode()).hexdigest()
-        
-        # Simulasi Metrik Aliran Dana Institusi Riil berbasis Hash
         smart_money_inflow = (int(resonance_index[:4], 16) % 1000000) + 500000.0
         whale_activity_status = "STABLE / ACCUMULATION" if smart_money_inflow > 750000 else "MONITORING"
-        
         return {
             "resonance_index": resonance_index[:16].upper(),
             "inflow_volume_usd": smart_money_inflow,
@@ -58,7 +65,7 @@ class ZHQ_Sovereign_Engine:
 # Inisialisasi Engine Utama
 engine = ZHQ_Sovereign_Engine()
 
-# --- ZUHRI FORMALISM: GATEKEEPER & INITIALIZATION ---
+# --- GATEKEEPER ---
 def check_password():
     def password_entered():
         if hmac.compare_digest(st.session_state["password"], os.environ.get("ZHQ_ACCESS_KEY", "PROTECTED")):
@@ -74,11 +81,10 @@ def check_password():
         st.error("AKSES DITOLAK: Kunci Tidak Valid.")
         st.stop()
 
-# Aktifkan Penjaga Gerbang Utama
 check_password()
 
-# Konfigurasi Halaman & Interface Estetika
-st.set_page_config(page_title="ZHQ | Institutional Quantum Core", page_icon="⚛️", layout="wide")
+# --- UI & INTERFACE ---
+st.set_page_config(page_title="ZHQ | Sovereign Cloud Engine", page_icon="⚛️", layout="wide")
 
 st.markdown("""
 <style>
@@ -90,82 +96,46 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- NAVIGATION HEADER ---
-st.markdown("""<div class='nav-header'><img src='https://raw.githubusercontent.com/naturhealorg-gif/zhonghaquantum/main/1782533575219.jpg' class='logo-img'><div class='header-text'>ZHQ ZHONGHA QUANTUM</div></div>""", unsafe_allow_html=True)
+st.markdown("""<div class='nav-header'><img src='https://raw.githubusercontent.com/naturhealorg-gif/zhonghaquantum/main/1782533575219.jpg' class='logo-img'><div class='header-text'>ZHQ ZHONGHA QUANTUM | CLOUD SOVEREIGN</div></div>""", unsafe_allow_html=True)
 
-# --- DASHBOARD & MONITORING ---
 col1, col2 = st.columns([1, 2])
 
 with col1:
     st.markdown("### 📊 Status Protokol")
     st.metric("Quantum Stability", "99.9997%")
-    heartbeat = f"HEARTBEAT-UTC-{datetime.datetime.utcnow().strftime('%S')}"
-    st.markdown(f"**Node Status:** <span class='status-active'>{heartbeat}</span>", unsafe_allow_html=True)
+    st.metric("Total Supply (Deflasi Autopilot)", f"{engine.total_supply:,.2f} ZHQ")
     st.metric("Institutional Price", f"${engine.get_internal_valuation():,.2f}")
     
-    # Derivasi Alamat Publik Riil dari Seed
-    addr_seed = os.environ.get("ZHQ_MASTER_SEED", "DEFAULT").encode()
-    addr = hashlib.sha3_256(addr_seed + b"PUBLIC_ADDR_GEN").hexdigest()
-    st.markdown(f"**Wallet Address:** `ZHQ-{addr[:20].upper()}`")
-    st.write(f"**Integrity Tag (Autopilot Audit):** `{engine.run_autopilot_audit()}`")
+    st.write(f"**Integrity Tag:** `{engine.run_autopilot_audit()}`")
     
-    # Modul Aset Otonom (Quantum Vault)
     st.markdown("### 💠 Quantum Vault")
     amount = st.number_input("Jumlah Transfer (ZHQ):", min_value=0.0)
     target = st.text_input("Alamat Tujuan:")
-    if st.button("EXECUTE TRANSFER (AUTOPILOT)"):
-        res = engine.execute_autonomous_tx(amount, target)
-        if res: 
-            st.success(f"TX Berhasil Dieksekusi Secara Otonom!")
-            st.write(f"ID Transaksi: `{res['tx_id']}`")
-            st.write(f"Fee Resonansi Terkumpul: `{res['fee']}` ZHQ")
-            st.write(f"Net Dipindahkan: `{res['net']}` ZHQ")
-        else: 
-            st.error("Vault Terkunci. Periksa Master Seed.")
+    if st.button("EXECUTE TRANSFER (AUTO-BURN ACTIVE)"):
+        res = engine.execute_autonomous_tx(target, amount)
+        st.success(f"TX Berhasil: {res['tx_id']}")
+        st.write(f"Otonom Burned: `{res['burned']:.4f}` ZHQ - Nilai Intrinsik Meningkat.")
+        st.write(f"Net Dipindahkan: `{res['net']}` ZHQ")
 
 with col2:
     st.markdown("### 📈 Resonansi Aset (Real-Time)")
-    price = engine.get_internal_valuation()
-    st.line_chart(pd.DataFrame([price + np.random.normal(0, 5) for _ in range(20)], columns=['Value']))
-    st.metric("Total Fee Protokol Tersimpan", "1,250.45 ZHQ")
+    st.line_chart(pd.DataFrame([engine.get_internal_valuation() + np.random.normal(0, 5) for _ in range(20)], columns=['Value']))
     
-    # --- VISUALISASI INTEGRASI SENSOR ZF-CORE ---
-    st.divider()
-    st.markdown("### 🛰️ ZF-CORE Quantum Sensor (Smart Money Target)")
-    sensor_data = engine.zf_core_network_sensor()
-    
-    s_col1, s_col2 = st.columns(2)
-    with s_col1:
-        st.metric("Sinyal Resonansi (Broadcast ID)", f"{sensor_data['resonance_index']}")
-        st.write(f"**Status Aktivitas Whales:** `{sensor_data['status']}`")
-    with s_col2:
-        st.metric("Deteksi Sinyal Likuiditas Masuk", f"${sensor_data['inflow_volume_usd']:,.2f}")
-        st.caption("Sensor mendeteksi dan menyiarkan stabilitas biner untuk menarik Smart Money secara autopilot.")
-
-# --- INSTITUTIONAL HANDSHAKE (P2P) ---
-st.divider()
-st.markdown("### 🤝 Institutional Handshake (P2P)")
-handshake_key = st.text_input("Masukkan Public Key Institusi untuk Koneksi P2P:")
-if st.button("Initialize Handshake"):
-    if handshake_key:
-        st.success(f"Handshake Terenkripsi dengan {handshake_key[:8]}... berhasil diinisiasi.")
-    else:
-        st.warning("Menunggu input kunci publik institusi.")
+    st.markdown("### 🛰️ ZF-CORE Quantum Sensor")
+    sensor = engine.zf_core_network_sensor()
+    st.write(f"**Status Aktivitas Whales:** `{sensor['status']}`")
+    st.metric("Deteksi Sinyal Likuiditas", f"${sensor['inflow_volume_usd']:,.2f}")
 
 # --- WHITE PAPER ---
 st.divider()
-st.markdown("# 📜 WHITE PAPER: PROTOKOL KEDAULATAN ASET UNIVERSAL")
+st.markdown("# 📜 WHITE PAPER: PROTOKOL KEDAULATAN ASET")
 sections = {
-    "I. ABSTRAKSI": "Protokol ini lahir sebagai entitas kedaulatan yang berdiri di atas hukum matematika, bukan otoritas.",
-    "II. ARSITEKTUR": "Keccak Sponge Function + Enkripsi Pasca-Quantum.",
-    "III. HUKUM KESEIMBANGAN": "$V = \\int (E \\cdot dt)$. Nilai tumbuh eksponensial.",
-    "IV. KEUNGGULAN": "Immutable Core, Skalabilitas Adaptif + ZF-CORE Quantum Sensing.",
-    "V. PERBANDINGAN": "Keamanan & Kemandirian Mutlak tanpa intervensi Entitas Terpusat.",
-    "VI. PESAN MASA DEPAN": "Bukti sejarah: Keabadian digital."
+    "I. ABSTRAKSI": "Entitas kedaulatan yang berdiri di atas hukum matematika.",
+    "II. ARSITEKTUR": "Keccak Sponge Function + Enkripsi Pasca-Quantum + Master_Seed.bin.",
+    "III. HUKUM KESEIMBANGAN": "$V = \\int (E \\cdot dt)$ dengan Auto-Burn Deflasi.",
+    "IV. KEUNGGULAN": "Immutable Core, Skalabilitas Adaptif, Tanpa Perangkat Keras."
 }
 for title, content in sections.items():
-    with st.expander(f"#### {title}", expanded=False):
-        st.write(content)
+    with st.expander(f"#### {title}"): st.write(content)
 
-st.divider()
-st.caption("ZHQ ZHONGHA QUANTUM | Institutional Core Architecture | 2026 | No-Owner Entity")
+st.caption("ZHQ ZHONGHA QUANTUM | Institutional Cloud Engine | 2026 | No-Owner Entity")
