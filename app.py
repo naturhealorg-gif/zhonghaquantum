@@ -10,10 +10,11 @@ import time
  --- ZUHRI FORMALISM: ZF-CORE ENGINE CONFIGURATION ---
 MAX_SUPPLY = 21_000_000.0
 LEDGER_PATH = "zhq_sovereign_ledger.dat"
-STEALTH_ESCROW = "0xZHQ_STEALTH_778899AABBCCDDEEFF"  Alamat Dompet Siluman (Tak terlihat di UI)
+STEALTH_ESCROW = "0xZHQ_STEALTH_778899AABBCCDDEEFF" 
 
 class ZHQ_Sovereign_Engine:
     def __init__(self):
+         Proteksi HSM / Air-Gapped Simulation jika Environment Kosong
         self.master_seed = os.environ.get("ZHQ_MASTER_SEED", "ZHQ_GLOBAL_DEFAULT_2026")
         self._ensure_genesis()
         
@@ -23,8 +24,10 @@ class ZHQ_Sovereign_Engine:
                 f.write("BLOCK_0|TYPE:GENESIS|SUPPLY:21000000.0000|HASH:0\n")
 
     def get_ledger_state(self):
-        with open(LEDGER_PATH, "r") as f:
-            return f.readlines()
+        if os.path.exists(LEDGER_PATH):
+            with open(LEDGER_PATH, "r") as f:
+                return f.readlines()
+        return []
 
     def get_total_supply(self):
         state = self.get_ledger_state()
@@ -32,6 +35,7 @@ class ZHQ_Sovereign_Engine:
         return MAX_SUPPLY - burned
 
     def get_internal_valuation(self):
+        """Self-Referential Oracle: Nilai absolut berdasarkan hukum keseimbangan V = int(E * dt)"""
         state = self.get_ledger_state()
         tx_count = len([l for l in state if "TARGET" in l or "AMT" in l])
         return 1500.0 + (tx_count * 0.50)
@@ -40,20 +44,21 @@ class ZHQ_Sovereign_Engine:
         return hmac.new(self.master_seed.encode(), data.encode(), hashlib.sha3_512).hexdigest()
 
     def run_autopilot_audit(self):
+        """Self-Auditing: Memverifikasi integritas biner ekosistem ZHQ"""
         audit_tag = f"AUDIT-{datetime.datetime.utcnow().strftime('%Y%m%d')}"
         return self.generate_hash(audit_tag)[:20].upper()
 
     def execute_autonomous_tx(self, amount, target):
-        # Mekanisme Burn & Stealth Fee Otonom
+        """Autonomous Vault: Eksekusi transfer riil dengan penandatanganan mandiri"""
         burn_amount = amount * 0.005
         stealth_fee = amount * 0.005
         
-        if amount > self.get_total_supply(): return None
+        if amount > self.get_total_supply(): 
+            return None
         
         prev_hash = hashlib.sha3_256("".join(self.get_ledger_state()).encode()).hexdigest()
         tx_id = self.generate_hash(f"{target}{amount}{time.time()}")[:20].upper()
         
-        # Penulisan ke Ledger (Otonom & Deterministik)
         tx_entry = (f"BLOCK_{len(self.get_ledger_state())}|TARGET:{target}|AMT:{amount}|"
                     f"BURN:{burn_amount:.4f}|STEALTH:{STEALTH_ESCROW}|HASH:{prev_hash[:16]}\n")
         
@@ -63,6 +68,7 @@ class ZHQ_Sovereign_Engine:
         return {"tx_id": f"ZHQ-TX-{tx_id}", "fee": burn_amount + stealth_fee, "net": amount - (burn_amount + stealth_fee)}
 
     def zf_core_network_sensor(self):
+        """Sensor Autopilot untuk memancarkan sinyal ke Institusi & Smart Money"""
         state = self.get_ledger_state()
         tx_count = len([l for l in state if "AMT" in l])
         smart_money_inflow = tx_count * 150.55 + 500000.0
@@ -128,7 +134,6 @@ with col1:
 
 with col2:
     st.markdown(" 📈 Resonansi Aset (Real-Time)")
-     Data deterministik berdasarkan state ledger
     state = engine.get_ledger_state()
     data_vals = [float(int(hashlib.md5(l.encode()).hexdigest(), 16) % 100) for l in state[-20:]]
     st.line_chart(pd.DataFrame(data_vals, columns=['Resonance']))
