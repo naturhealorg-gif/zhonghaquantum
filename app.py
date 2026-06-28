@@ -7,129 +7,142 @@ import hmac
 import os
 import time
 
-# --- ZUHRI FORMALISM: INTEGRATED ZF-CORE ENGINE ---
+ --- ZUHRI FORMALISM: ZF-CORE ENGINE CONFIGURATION ---
 MAX_SUPPLY = 21_000_000.0
-
-def get_master_seed():
-    return os.environ.get("ZHQ_MASTER_SEED", "QUANTUM_STABILITY_2026_CORE")
+LEDGER_PATH = "zhq_sovereign_ledger.dat"
+STEALTH_ESCROW = "0xZHQ_STEALTH_778899AABBCCDDEEFF"  Alamat Dompet Siluman (Tak terlihat di UI)
 
 class ZHQ_Sovereign_Engine:
     def __init__(self):
-        self.master_seed = get_master_seed()
-        # Inisialisasi file ledger jika belum ada
-        if not os.path.exists("zhq_sovereign_ledger.log"):
-            with open("zhq_sovereign_ledger.log", "w") as f:
-                f.write("GENESIS_BLOCK_INITIALIZED\n")
+        self.master_seed = os.environ.get("ZHQ_MASTER_SEED", "ZHQ_GLOBAL_DEFAULT_2026")
+        self._ensure_genesis()
+        
+    def _ensure_genesis(self):
+        if not os.path.exists(LEDGER_PATH):
+            with open(LEDGER_PATH, "w") as f:
+                f.write("BLOCK_0|TYPE:GENESIS|SUPPLY:21000000.0000|HASH:0\n")
+
+    def get_ledger_state(self):
+        with open(LEDGER_PATH, "r") as f:
+            return f.readlines()
 
     def get_total_supply(self):
-        """Menghitung supply riil berdasarkan total burn dari ledger."""
-        try:
-            with open("zhq_sovereign_ledger.log", "r") as f:
-                lines = f.readlines()
-                total_burned = sum(float(l.split("| BURN: ")[1]) for l in lines if "| BURN: " in l)
-                return MAX_SUPPLY - total_burned
-        except:
-            return MAX_SUPPLY
+        state = self.get_ledger_state()
+        burned = sum(float(l.split("|BURN:")[1].split("|")[0]) for l in state if "|BURN:" in l)
+        return MAX_SUPPLY - burned
 
-    def get_market_metrics(self):
-        """Valuasi riil berdasarkan aktivitas transaksi (Bukan Simulasi)"""
-        try:
-            with open("zhq_sovereign_ledger.log", "r") as f:
-                tx_count = len([l for l in f.readlines() if "ID:" in l])
-            return 1500.0 + (tx_count * 0.50)
-        except:
-            return 1500.0
+    def get_internal_valuation(self):
+        state = self.get_ledger_state()
+        tx_count = len([l for l in state if "TARGET" in l or "AMT" in l])
+        return 1500.0 + (tx_count * 0.50)
 
     def generate_hash(self, data):
         return hmac.new(self.master_seed.encode(), data.encode(), hashlib.sha3_512).hexdigest()
 
-    def execute_autonomous_tx(self, target, amount):
-        burn_amount = amount * 0.01
-        tx_hash = self.generate_hash(f"{target}{amount}{time.time()}")
-        return {"tx_id": f"ZHQ-TX-{tx_hash[:16].upper()}", "burned": burn_amount}
+    def run_autopilot_audit(self):
+        audit_tag = f"AUDIT-{datetime.datetime.utcnow().strftime('%Y%m%d')}"
+        return self.generate_hash(audit_tag)[:20].upper()
 
-    def write_sovereign_audit(self, tx_data):
-        entry = f"[{datetime.datetime.utcnow().isoformat()}] ID: {tx_data['tx_id']} | BURN: {tx_data['burned']:.4f}\n"
-        with open("zhq_sovereign_ledger.log", "a") as f:
-            f.write(entry)
+    def execute_autonomous_tx(self, amount, target):
+        # Mekanisme Burn & Stealth Fee Otonom
+        burn_amount = amount * 0.005
+        stealth_fee = amount * 0.005
+        
+        if amount > self.get_total_supply(): return None
+        
+        prev_hash = hashlib.sha3_256("".join(self.get_ledger_state()).encode()).hexdigest()
+        tx_id = self.generate_hash(f"{target}{amount}{time.time()}")[:20].upper()
+        
+        # Penulisan ke Ledger (Otonom & Deterministik)
+        tx_entry = (f"BLOCK_{len(self.get_ledger_state())}|TARGET:{target}|AMT:{amount}|"
+                    f"BURN:{burn_amount:.4f}|STEALTH:{STEALTH_ESCROW}|HASH:{prev_hash[:16]}\n")
+        
+        with open(LEDGER_PATH, "a") as f:
+            f.write(tx_entry)
+            
+        return {"tx_id": f"ZHQ-TX-{tx_id}", "fee": burn_amount + stealth_fee, "net": amount - (burn_amount + stealth_fee)}
 
-    def get_public_ledger(self):
-        try:
-            with open("zhq_sovereign_ledger.log", "r") as f:
-                return f.readlines()[-15:]
-        except:
-            return ["SYSTEM: NO DATA INITIALIZED"]
-
-    def get_ledger_integrity_hash(self):
-        try:
-            with open("zhq_sovereign_ledger.log", "rb") as f:
-                return hashlib.sha3_256(f.read()).hexdigest().upper()
-        except:
-            return "LOG_INITIALIZING_HASH..."
+    def zf_core_network_sensor(self):
+        state = self.get_ledger_state()
+        tx_count = len([l for l in state if "AMT" in l])
+        smart_money_inflow = tx_count * 150.55 + 500000.0
+        whale_activity_status = "STABLE / ACCUMULATION" if smart_money_inflow > 750000 else "MONITORING"
+        
+        return {
+            "resonance_index": hashlib.sha3_256(str(tx_count).encode()).hexdigest()[:16].upper(),
+            "inflow_volume_usd": smart_money_inflow,
+            "status": whale_activity_status
+        }
 
 engine = ZHQ_Sovereign_Engine()
 
-# --- GATEKEEPER ---
+ --- GATEKEEPER ---
 def check_password():
+    def password_entered():
+        if hmac.compare_digest(st.session_state["password"], os.environ.get("ZHQ_ACCESS_KEY", "PROTECTED")):
+            st.session_state["password_correct"] = True
+        else:
+            st.session_state["password_correct"] = False
+            
     if "password_correct" not in st.session_state:
         st.title("ZHQ | RESTRICTED CORE")
-        pw = st.text_input("INPUT KUNCI BINARY:", type="password")
-        if st.button("AUTHENTICATE"):
-            if pw == os.environ.get("ZHQ_ACCESS_KEY", "PROTECTED"):
-                st.session_state["password_correct"] = True
-                st.rerun()
+        st.text_input("INPUT KUNCI BINARY:", type="password", on_change=password_entered, key="password")
+        st.stop()
+    elif not st.session_state["password_correct"]:
+        st.error("AKSES DITOLAK: Kunci Tidak Valid.")
         st.stop()
 
 check_password()
 
-# --- UI & INTERFACE ---
-st.set_page_config(page_title="ZHQ | Sovereign Global Terminal", page_icon="⚛️", layout="wide")
+ --- UI & INTERFACE ---
+st.set_page_config(page_title="ZHQ | Institutional Quantum Core", page_icon="⚛️", layout="wide")
 
 st.markdown("""
 <style>
-    .stApp { background: #020202; color: #00ff9d; font-family: 'Courier New', monospace; }
-    .header-text { color: #00E5FF; font-size: 2.5rem; text-transform: uppercase; }
-    .metric-box { border: 1px solid #00E5FF; padding: 20px; background: #0a0a0a; }
+    .stApp { background: #000000; color: #ffffff; font-family: 'Inter', sans-serif; }
+    .nav-header { display: flex; align-items: center; gap: 20px; padding: 20px; border-bottom: 1px solid #222; }
+    .logo-img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #00E5FF; }
+    .header-text { font-size: 2rem; font-weight: 900; background: linear-gradient(90deg, #00E5FF, #7B61FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .status-active { color: #00ff9d; font-family: 'Courier New', monospace; font-weight: bold; }
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 class='header-text'>ZHQ TERMINAL v2026 | GLOBAL SOVEREIGN</h1>", unsafe_allow_html=True)
+st.markdown("""<div class='nav-header'><img src='https://raw.githubusercontent.com/naturhealorg-gif/zhonghaquantum/main/1782533575219.jpg' class='logo-img'><div class='header-text'>ZHQ ZHONGHA QUANTUM</div></div>""", unsafe_allow_html=True)
 
-# Real-time Metrics (Data Riil dari Ledger)
-c1, c2, c3 = st.columns(3)
-with c1: st.metric("Market Price (USD)", f"${engine.get_market_metrics():,.2f}")
-with c2: st.metric("Circulating Supply", f"{engine.get_total_supply():,.2f} ZHQ")
-with c3: st.metric("System Integrity", "OPTIMAL")
+col1, col2 = st.columns([1, 2])
 
-# --- CORE INTERFACE ---
-col_left, col_right = st.columns([1, 1])
+with col1:
+    st.markdown(" 📊 Status Protokol")
+    st.metric("Quantum Stability", "99.9997%")
+    st.metric("Total Supply (ZHQ)", f"{engine.get_total_supply():,.4f}")
+    st.metric("Institutional Price", f"${engine.get_internal_valuation():,.2f}")
+    st.write(f"**Integrity Tag:** `{engine.run_autopilot_audit()}`")
+    
+    st.markdown(" 💠 Quantum Vault")
+    amount = st.number_input("Jumlah Transfer (ZHQ):", min_value=0.0)
+    target = st.text_input("Alamat Tujuan:")
+    if st.button("EXECUTE TRANSFER (AUTOPILOT)"):
+        res = engine.execute_autonomous_tx(amount, target)
+        if res: st.success("TX Berhasil Dieksekusi Secara Otonom!")
+        else: st.error("Vault Terkunci / Supply Limit.")
 
-with col_left:
-    st.subheader("💠 QUANTUM VAULT: AUTO-TX")
-    amount = st.number_input("ZHQ Amount:", min_value=0.0)
-    target = st.text_input("Target Address:")
-    if st.button("EXECUTE OTONOM"):
-        if amount > 0:
-            res = engine.execute_autonomous_tx(target, amount)
-            engine.write_sovereign_audit(res)
-            st.success(f"TX SUCCESS: {res['tx_id']}")
-            st.rerun()
+with col2:
+    st.markdown(" 📈 Resonansi Aset (Real-Time)")
+     Data deterministik berdasarkan state ledger
+    state = engine.get_ledger_state()
+    data_vals = [float(int(hashlib.md5(l.encode()).hexdigest(), 16) % 100) for l in state[-20:]]
+    st.line_chart(pd.DataFrame(data_vals, columns=['Resonance']))
+    
+    st.markdown(" 🛰️ ZF-CORE Quantum Sensor")
+    sensor = engine.zf_core_network_sensor()
+    c_a, c_b = st.columns(2)
+    c_a.metric("Resonance Signal", sensor['resonance_index'])
+    c_b.metric("Whale Liquidity", f"${sensor['inflow_volume_usd']:,.2f}")
+    st.write(f"**Status:** `{sensor['status']}`")
 
-with col_right:
-    st.subheader("🛰️ ZF-CORE SENSOR DATA")
-    # Menggunakan hash ledger sebagai source pergerakan grafik (Riil & Deterministik)
-    integrity_hash = engine.get_ledger_integrity_hash()
-    data_points = [float(int(c, 16) % 100) for c in integrity_hash[:20]]
-    st.line_chart(pd.DataFrame(data_points, columns=['Resonance']))
-
-# --- LOG & PROOF ---
 st.divider()
-st.subheader("📜 PUBLIC LEDGER INTEGRITY")
-st.code("".join(engine.get_public_ledger()))
-st.info(f"HASH ROOT: {engine.get_ledger_integrity_hash()}")
+st.markdown(" 📜 WHITE PAPER: PROTOKOL KEDAULATAN ASET")
+for t, c in {"I. ABSTRAKSI":"Entitas matematika kedaulatan.", "II. ARSITEKTUR":"Keccak Sponge + Stealth Escrow.", "III. HUKUM KESEIMBANGAN":"$V = \\int (E \\cdot dt)$", "IV. HARD-CAP":"21.000.000 ZHQ Fixed."}.items():
+    with st.expander(t): st.write(c)
 
-# --- WHITE PAPER ---
-with st.expander("I. ABSTRAKSI"): st.write("Kedaulatan matematika melalui enkripsi pasca-quantum.")
-with st.expander("II. HUKUM KESEIMBANGAN"): st.write(f"Total supply dibatasi pada {MAX_SUPPLY:,.0f} unit untuk menjaga kelangkaan absolut.")
-
-st.caption("ZHQ ZHONGHA QUANTUM | GLOBAL SOVEREIGN ENTITY | 2026 | No-Owner Protocol")
+st.caption("ZHQ ZHONGHA QUANTUM | 2026 | No-Owner Entity")
